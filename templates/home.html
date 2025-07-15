@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recommendations</title>
+</head>
+<body>
+    <nav>
+        <a href="/recommend"><button>Recommend a movie</button></a>
+        {% if not user.is_authenticated %}<a href="/login"><button>Login</button></a>{%endif%}
+    </nav>
+    <h1>Recommendations</h1>
+    {% if user.is_authenticated %}
+        
+        <ol>
+            {% for movie in movies %}
+                {% if movie.recommended_by == user %}
+                    <li>{{ movie }} - {{movie.recommended_by}}  ({{movie.date|date:"d F Y H:i"}}) <a href="/delete/{{movie.id}}"><button>🗑️ Delete</button></a></li>
+                {% else %}
+                    <li>{{ movie }} - {{movie.recommended_by}}  ({{movie.date|date:"d F Y H:i"}})</li>
+                {% endif %}
+            {% endfor %}
+        </ol>
+        
+        <form method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log Out</button>
+        </form>
+    {% else %}
+        <ol>
+            {% for movie in movies %}
+                <li>{{ movie }} - {{movie.recommended_by}}  ({{movie.date|date:"d F Y H:i"}})</li>
+            {% endfor %}
+        </ol>
+    {% endif %}
+    
+</body>
+</html>
